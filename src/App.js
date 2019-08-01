@@ -15,8 +15,6 @@ class App extends React.Component {
     this.setState({ loading: true });
     try {
       const response = await axios.get(url);
-      console.log(response);
-
       this.setState({
         loading: false,
         restaurant: response.data.restaurant,
@@ -66,10 +64,12 @@ class App extends React.Component {
               <div key={dish.title} className="MenuItem">
                 <div className="MenuItem--card">
                   <div className="MenuItem--texts">
-                    <h3>{dish.title}</h3>
-                    <p>{dish.description}</p>
+                    {dish.title && <h3>{dish.title}</h3>}
+                    {dish.description && <p>{dish.description}</p>}
                     <div className="MenuItem--infos">
-                      <span className="MenuItem--price">{dish.price}</span>
+                      {dish.price && (
+                        <span className="MenuItem--price">{dish.price}</span>
+                      )}
                       {dish.popular && (
                         <span className="MenuItem--popular">
                           <svg
@@ -86,9 +86,11 @@ class App extends React.Component {
                       )}
                     </div>
                   </div>
-                  <div className="MenuItem--picture">
-                    <img src={dish.picture} alt="" />
-                  </div>
+                  {dish.picture && (
+                    <div className="MenuItem--picture">
+                      <img src={dish.picture} alt="" />
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -100,7 +102,6 @@ class App extends React.Component {
             </div>
           );
         }
-        // console.log(menuItems);
       });
       return menuItems;
     }
