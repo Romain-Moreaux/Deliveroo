@@ -1,5 +1,7 @@
 import React from "react";
 import axios from "axios";
+import Menu from "./Menu";
+import Restaurant from "./Restaurant";
 
 const GETS_MENU = "https://deliveroo-api.now.sh/menu";
 
@@ -30,81 +32,12 @@ class App extends React.Component {
   };
 
   renderRestaurant() {
-    if (this.state.restaurant !== null) {
-      return (
-        <div className="RestaurantInfos">
-          <div className="RestaurantInfos--center">
-            <div className="RestaurantInfos--texts">
-              <h1>{this.state.restaurant.name}</h1>
-              <p>{this.state.restaurant.description}</p>
-            </div>
-            <img
-              className="RestaurantInfos--cover"
-              src={this.state.restaurant.picture}
-              alt={`${this.state.restaurant.name}, ${
-                this.state.restaurant.categories
-              }`}
-            />
-          </div>
-        </div>
-      );
-    }
+    if (this.state.restaurant)
+      return <Restaurant restaurant={this.state.restaurant} />;
   }
 
   renderMenu() {
-    if (this.state.menu !== null) {
-      let menuKeys = Object.keys(this.state.menu);
-      let menuItems = [];
-      menuKeys.forEach((category, index) => {
-        let dishes = [];
-        console.log(this.state.menu[category]);
-        if (this.state.menu[category].length > 0) {
-          this.state.menu[category].forEach((dish, index) => {
-            dishes.push(
-              <div key={dish.title} className="MenuItem">
-                <div className="MenuItem--card">
-                  <div className="MenuItem--texts">
-                    {dish.title && <h3>{dish.title}</h3>}
-                    {dish.description && <p>{dish.description}</p>}
-                    <div className="MenuItem--infos">
-                      {dish.price && (
-                        <span className="MenuItem--price">{dish.price}</span>
-                      )}
-                      {dish.popular && (
-                        <span className="MenuItem--popular">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="#ff8000"
-                            className="feather feather-star"
-                            style={{ width: 20, height: 20, marginRight: 5 }}
-                          >
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                          </svg>{" "}
-                          Populaire
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {dish.picture && (
-                    <div className="MenuItem--picture">
-                      <img src={dish.picture} alt="" />
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          });
-          menuItems.push(
-            <div key={category} className="MenuItems">
-              <h2>{category}</h2>
-              <div className="MenuItems--items">{dishes}</div>
-            </div>
-          );
-        }
-      });
-      return menuItems;
-    }
+    if (this.state.menu) return <Restaurant menu={this.state.menu} />;
   }
 
   render() {
@@ -126,11 +59,15 @@ class App extends React.Component {
               </svg>
             </div>
           </div>
-          {this.renderRestaurant()}
+          {this.state.restaurant && (
+            <Restaurant restaurant={this.state.restaurant} />
+          )}
         </header>
         <div className="Content">
           <div className="Content--center">
-            <div className="Menu">{this.renderMenu()}</div>
+            <div className="Menu">
+              {this.state.menu && <Menu menu={this.state.menu} />}
+            </div>
             <div className="Cart">
               <div className="Cart--card">
                 <button className="Cart--validate Cart--disabled">
