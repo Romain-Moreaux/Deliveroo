@@ -53,8 +53,6 @@ class App extends React.Component {
   };
 
   render() {
-    console.log("render");
-
     return (
       <div>
         <header className="Header">
@@ -104,7 +102,7 @@ class App extends React.Component {
                 />
               )}
             </div>
-            <Cart cart={this.state.cart} />
+            <Cart key="" cart={this.state.cart} />
           </div>
         </div>
       </div>
