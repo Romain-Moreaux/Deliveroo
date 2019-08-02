@@ -2,7 +2,16 @@ import React from "react";
 
 function Dish(props) {
   return (
-    <div key={props.dish.title} className="MenuItem">
+    <div
+      onClick={() => {
+        props.addCartOnClick({
+          id: props.dish.id,
+          title: props.dish.title,
+          price: props.dish.price
+        });
+      }}
+      className="MenuItem"
+    >
       <div className="MenuItem--card">
         <div className="MenuItem--texts">
           {props.dish.title && <h3>{props.dish.title}</h3>}

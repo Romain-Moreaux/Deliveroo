@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import Menu from "./Menu";
 import Restaurant from "./Restaurant";
+import Cart from "./Cart";
 
 const GETS_MENU = "https://deliveroo-api.now.sh/menu";
 
@@ -9,14 +10,34 @@ class App extends React.Component {
   state = {
     loading: false,
     restaurant: null,
-    menu: null
+    menu: null,
+    cart: []
   };
+
+  findById(arr, target) {
+    console.log(arr);
+    if (arr)
+      return arr.find(element => {
+        return element.id === target.id;
+      });
+  }
 
   getDatas = async () => {
     let url = GETS_MENU;
     this.setState({ loading: true });
     try {
       const response = await axios.get(url);
+
+      for (let category of Object.keys(response.data.menu)) {
+        let dishes = response.data.menu[category];
+
+        if (dishes.length > 0) {
+          dishes.forEach((dish, index) => {
+            dishes[index].price = parseFloat(dish.price);
+          });
+        }
+      }
+
       this.setState({
         loading: false,
         restaurant: response.data.restaurant,
@@ -31,16 +52,9 @@ class App extends React.Component {
     this.getDatas();
   };
 
-  renderRestaurant() {
-    if (this.state.restaurant)
-      return <Restaurant restaurant={this.state.restaurant} />;
-  }
-
-  renderMenu() {
-    if (this.state.menu) return <Restaurant menu={this.state.menu} />;
-  }
-
   render() {
+    console.log("render");
+
     return (
       <div>
         <header className="Header">
@@ -66,16 +80,31 @@ class App extends React.Component {
         <div className="Content">
           <div className="Content--center">
             <div className="Menu">
-              {this.state.menu && <Menu menu={this.state.menu} />}
+              {this.state.menu && (
+                <Menu
+                  addCartOnClick={dish => {
+                    let refCart = [...this.state.cart];
+                    let found = this.findById(refCart, dish);
+                    let selected;
+                    if (found) {
+                      found.quantity += 1;
+                      selected = found;
+                    } else {
+                      selected = {
+                        id: dish.id,
+                        quantity: 1,
+                        name: dish.title,
+                        price: dish.price
+                      };
+                      refCart.push(selected);
+                    }
+                    this.setState({ cart: refCart });
+                  }}
+                  menu={this.state.menu}
+                />
+              )}
             </div>
-            <div className="Cart">
-              <div className="Cart--card">
-                <button className="Cart--validate Cart--disabled">
-                  Valider mon panier
-                </button>
-                <div className="Cart--empty">Votre panier est vide</div>
-              </div>
-            </div>
+            <Cart cart={this.state.cart} />
           </div>
         </div>
       </div>

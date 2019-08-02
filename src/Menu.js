@@ -6,11 +6,13 @@ function Menu(props) {
 
   let menuKeys = Object.keys(props.menu);
 
-  return menuKeys.map(category => {
+  return menuKeys.map((category, index) => {
     if (props.menu[category].length === 0) return null;
 
     const items = props.menu[category].map(dish => {
-      return <Dish dish={dish} />;
+      return (
+        <Dish addCartOnClick={props.addCartOnClick} key={dish.id} dish={dish} />
+      );
     });
 
     return (
