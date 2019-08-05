@@ -5,7 +5,6 @@ function Dish(props) {
     <div
       onClick={() => {
         props.addCartOnClick({
-          id: props.dish.id,
           title: props.dish.title,
           price: props.dish.price
         });

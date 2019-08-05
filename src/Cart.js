@@ -2,27 +2,40 @@ import React from "react";
 
 function Cart(props) {
   let cartIsEmpty = true;
-  let element = [];
-  var sousTotal = 0;
-  var fraisLivraison = 2.5;
-  if (props.cart.length >= 1) cartIsEmpty = false;
+  let products = [];
+  let sousTotal = 0;
+  let fraisLivraison = 2.5;
+  let cart = Object.entries(props.cart);
+
+  if (cart.length >= 1) cartIsEmpty = false;
 
   if (cartIsEmpty) {
-    element.push(
+    products.push(
       <div key="empty" className="Cart--empty">
         Votre panier est vide
       </div>
     );
   } else {
-    element = props.cart.map(product => {
-      let totalProduct = product.price * product.quantity;
+    products = cart.map(product => {
+      let productName = product[0];
+      let productPrice = product[1].price;
+      let productQuantity = product[1].quantity;
+      let totalProduct = productPrice * productQuantity;
       sousTotal += totalProduct;
+
       return (
-        <React.Fragment>
+        <React.Fragment key={productName}>
           <div className="Cart--items">
             <div className="Cart--line">
               <div className="Cart--counter">
-                <span>
+                <span
+                  onClick={() => {
+                    props.removeProductOnClick({
+                      title: productName,
+                      price: productPrice
+                    });
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -43,8 +56,15 @@ function Cart(props) {
                     <line x1={8} y1={12} x2={16} y2={12} />
                   </svg>
                 </span>
-                <span>{product.quantity}</span>
-                <span>
+                <span>{productQuantity}</span>
+                <span
+                  onClick={() => {
+                    props.addProductOnClick({
+                      title: productName,
+                      price: product.price
+                    });
+                  }}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -67,7 +87,7 @@ function Cart(props) {
                   </svg>
                 </span>
               </div>
-              <span className="Cart--item-name">{product.name}</span>
+              <span className="Cart--item-name">{productName}</span>
               <span className="Cart--amount">{totalProduct.toFixed(2)}€</span>
             </div>
           </div>
@@ -75,8 +95,8 @@ function Cart(props) {
       );
     });
 
-    element.push(
-      <React.Fragment>
+    products.push(
+      <React.Fragment key="cartResults">
         <div className="Cart--results">
           <div className="Cart--result-line">
             <span className="Cart--result-name">Sous-total</span>
@@ -105,7 +125,7 @@ function Cart(props) {
         >
           Valider mon panier
         </button>
-        {element}
+        {products}
       </div>
     </div>
   );

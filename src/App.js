@@ -11,15 +11,28 @@ class App extends React.Component {
     loading: false,
     restaurant: null,
     menu: null,
-    cart: []
+    cart: {}
   };
 
-  findById(arr, target) {
-    console.log(arr);
-    if (arr)
-      return arr.find(element => {
-        return element.id === target.id;
-      });
+  removeQuantity(product) {
+    return {
+      quantity: product.quantity - 1,
+      price: product.price
+    };
+  }
+  addQuantity(product) {
+    return {
+      quantity: product.quantity + 1,
+      price: product.price
+    };
+  }
+
+  findByName(obj, target) {
+    for (const key in obj) {
+      if (key === target.title) {
+        return key;
+      }
+    }
   }
 
   getDatas = async () => {
@@ -53,6 +66,8 @@ class App extends React.Component {
   };
 
   render() {
+    console.log(this.state.cart);
+
     return (
       <div>
         <header className="Header">
@@ -81,28 +96,38 @@ class App extends React.Component {
               {this.state.menu && (
                 <Menu
                   addCartOnClick={dish => {
-                    let refCart = [...this.state.cart];
-                    let found = this.findById(refCart, dish);
-                    let selected;
-                    if (found) {
-                      found.quantity += 1;
-                      selected = found;
-                    } else {
-                      selected = {
-                        id: dish.id,
-                        quantity: 1,
-                        name: dish.title,
-                        price: dish.price
-                      };
-                      refCart.push(selected);
-                    }
+                    let refCart = { ...this.state.cart };
+                    let selectedProduct = this.state.cart[dish.title]
+                      ? this.state.cart[dish.title]
+                      : { quantity: 0, price: dish.price };
+
+                    refCart[dish.title] = this.addQuantity(selectedProduct);
                     this.setState({ cart: refCart });
                   }}
                   menu={this.state.menu}
                 />
               )}
             </div>
-            <Cart key="" cart={this.state.cart} />
+            <Cart
+              removeProductOnClick={product => {
+                let refCart = { ...this.state.cart };
+                refCart[product.title] = this.removeQuantity(
+                  this.state.cart[product.title]
+                );
+                if (refCart[product.title].quantity === 0)
+                  delete refCart[product.title];
+                this.setState({ cart: refCart });
+              }}
+              addProductOnClick={product => {
+                let refCart = { ...this.state.cart };
+                refCart[product.title] = this.addQuantity(
+                  this.state.cart[product.title]
+                );
+                this.setState({ cart: refCart });
+              }}
+              key="cart"
+              cart={this.state.cart}
+            />
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ function Menu(props) {
 
   let menuKeys = Object.keys(props.menu);
 
-  return menuKeys.map((category, index) => {
+  return menuKeys.map(category => {
     if (props.menu[category].length === 0) return null;
 
     const items = props.menu[category].map(dish => {
