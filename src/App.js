@@ -14,12 +14,21 @@ class App extends React.Component {
     cart: {}
   };
 
+  /*
+    @param Object
+    @return New Object
+  */
   removeQuantity(product) {
     return {
       quantity: product.quantity - 1,
       price: product.price
     };
   }
+
+  /*
+    @param `Object`
+    @return `New Object`
+  */
   addQuantity(product) {
     return {
       quantity: product.quantity + 1,
@@ -27,6 +36,10 @@ class App extends React.Component {
     };
   }
 
+  /*
+    @param `Object`, `Object`
+    @return `String`
+  */
   findByName(obj, target) {
     for (const key in obj) {
       if (key === target.title) {
@@ -67,7 +80,6 @@ class App extends React.Component {
 
   render() {
     console.log(this.state.cart);
-
     return (
       <div>
         <header className="Header">
@@ -102,6 +114,7 @@ class App extends React.Component {
                       : { quantity: 0, price: dish.price };
 
                     refCart[dish.title] = this.addQuantity(selectedProduct);
+
                     this.setState({ cart: refCart });
                   }}
                   menu={this.state.menu}
@@ -116,6 +129,7 @@ class App extends React.Component {
                 );
                 if (refCart[product.title].quantity === 0)
                   delete refCart[product.title];
+
                 this.setState({ cart: refCart });
               }}
               addProductOnClick={product => {
@@ -123,6 +137,7 @@ class App extends React.Component {
                 refCart[product.title] = this.addQuantity(
                   this.state.cart[product.title]
                 );
+
                 this.setState({ cart: refCart });
               }}
               key="cart"

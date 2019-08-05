@@ -4,7 +4,7 @@ import Dish from "./Dish";
 function Menu(props) {
   if (props.menu === null) return null;
 
-  let menuKeys = Object.keys(props.menu);
+  const menuKeys = Object.keys(props.menu);
 
   return menuKeys.map(category => {
     if (props.menu[category].length === 0) return null;

@@ -1,11 +1,9 @@
 import React from "react";
 
 function Cart(props) {
-  let cartIsEmpty = true;
-  let products = [];
-  let sousTotal = 0;
-  let fraisLivraison = 2.5;
-  let cart = Object.entries(props.cart);
+  let cartIsEmpty = true,
+    products = [],
+    cart = Object.entries(props.cart);
 
   if (cart.length >= 1) cartIsEmpty = false;
 
@@ -16,12 +14,16 @@ function Cart(props) {
       </div>
     );
   } else {
+    let subtotal = 0,
+      shippingCost = 2.5;
+
     products = cart.map(product => {
-      let productName = product[0];
-      let productPrice = product[1].price;
-      let productQuantity = product[1].quantity;
-      let totalProduct = productPrice * productQuantity;
-      sousTotal += totalProduct;
+      let productName = product[0],
+        productPrice = product[1].price,
+        productQuantity = product[1].quantity,
+        totalProduct = productPrice * productQuantity;
+
+      subtotal += totalProduct;
 
       return (
         <React.Fragment key={productName}>
@@ -30,10 +32,7 @@ function Cart(props) {
               <div className="Cart--counter">
                 <span
                   onClick={() => {
-                    props.removeProductOnClick({
-                      title: productName,
-                      price: productPrice
-                    });
+                    props.removeProductOnClick({ title: productName });
                   }}
                 >
                   <svg
@@ -59,10 +58,7 @@ function Cart(props) {
                 <span>{productQuantity}</span>
                 <span
                   onClick={() => {
-                    props.addProductOnClick({
-                      title: productName,
-                      price: product.price
-                    });
+                    props.addProductOnClick({ title: productName });
                   }}
                 >
                   <svg
@@ -100,17 +96,17 @@ function Cart(props) {
         <div className="Cart--results">
           <div className="Cart--result-line">
             <span className="Cart--result-name">Sous-total</span>
-            <span className="Cart--amount">{sousTotal.toFixed(2)} €</span>
+            <span className="Cart--amount">{subtotal.toFixed(2)} €</span>
           </div>
           <div className="Cart--result-line">
             <span className="Cart--result-name">Frais de livraison</span>
-            <span>{fraisLivraison.toFixed(2)} €</span>
+            <span>{shippingCost.toFixed(2)} €</span>
           </div>
         </div>
         <div className="Cart--total">
           <span className="Cart--result-name">Total</span>
           <span className="Cart--amount">
-            {(sousTotal + fraisLivraison).toFixed(2)} €
+            {(subtotal + shippingCost).toFixed(2)} €
           </span>
         </div>
       </React.Fragment>
